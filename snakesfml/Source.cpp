@@ -132,6 +132,12 @@ int main()
 	snakeim.loadFromFile("pictures/snake.jpg");
 	sf::Texture snaketex;
 	snaketex.loadFromImage(snakeim);
+	//texture apple
+	sf::Image appleim;
+	appleim.loadFromFile("pictures/apple1.png");
+	appleim.createMaskFromColor(sf::Color(255, 255, 255, 255), 0);
+	sf::Texture appletex;
+	appletex.loadFromImage(appleim);
 
 	s[0].x = 15;
 	s[0].y = 10;
@@ -192,8 +198,11 @@ int main()
 			//draw fructs
 			for (int i = 0; i < 6; ++i)
 			{
-				sf::RectangleShape quad(sf::Vector2f(scale, scale));
-				quad.setPosition(d + f[i].x*scale, d + f[i].y * scale);
+				double k = 1.5;//retewt
+				sf::RectangleShape quad(sf::Vector2f(k * scale, k  * scale));
+				quad.setPosition(d + f[i].x * scale - scale * (k-1)/2, d + f[i].y * scale - scale*(k-1)/2);
+				quad.setTexture(&appletex);
+				quad.setTextureRect(sf::IntRect(0, 0, 380, 380));
 				window.draw(quad);
 			}
 
