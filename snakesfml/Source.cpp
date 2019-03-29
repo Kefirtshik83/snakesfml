@@ -1,13 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <sstream>
+#include <cmath>
 int n = 50, m = 30;
 int scale = 24;
 int d = 20;
 int w = scale * n;
+int hscore = 60;
+int score = 0;
+double time1 = 600000;
+int level = 1, maxlevel = 15;
 int h = scale * m;
 //1-right  2-up  3-left   4-down
 int dir = 1, len = 5;
-int flag = -1;
+int flag = -1; //start picture
 int i =  5;
 
 
@@ -34,7 +40,7 @@ struct fruct
 
 void tick()
 {
-	if (cl.getElapsedTime().asMicroseconds() - t.asMicroseconds() > 300000)
+	if (cl.getElapsedTime().asMicroseconds() - t.asMicroseconds() > time1*pow(0.9, level - 1))
 	{
 		t = cl.getElapsedTime();
 
@@ -59,6 +65,7 @@ void tick()
 				len = 2;
 				s[0].x = 15;
 				s[0].y = 10;
+				score = 0;
 			}
 		}
 		if (s[0].x * scale + d < d || s[0].x * scale + scale + d > w + d || s[0].y * scale + d < d || s[0].y * scale + scale + d > h + d)
@@ -67,6 +74,7 @@ void tick()
 			len = 2;
 			s[0].x = 15;
 			s[0].y = 10;
+			score = 0;
 		}
 	}
 
@@ -74,6 +82,8 @@ void tick()
 	{
 		if (s[0].x == f[i].x && s[0].y == f[i].y)
 		{
+			++score;
+			level = 1 + score / 1;
 			f[i].x = rand() % n; //
 			f[i].y = rand() % m;
 			len++;
@@ -92,6 +102,15 @@ void key()
 
 int main()
 {
+	//шрифт
+
+	sf::Font font;//шрифт 
+	font.loadFromFile("pictures/CyrilicOld.TTF");//передаем нашему шрифту файл шрифта
+	sf::Text text("", font, 20);//создаем объект текст. закидываем в объект текст строку, шрифт, размер шрифта(в пикселях);//сам объект текст (не строка)
+	//text.setColor(sf::Color::Red);//покрасили текст в красный. если убрать эту строку, то по умолчанию он белый
+	text.setStyle(sf::Text::Bold | sf::Text::Underlined);//жирный и подчеркнутый текст. по умолчанию он "худой":)) и не подчеркнутый
+
+
 	//headband
 	sf::Image headband;
 	headband.loadFromFile("pictures/headband.jpg");
@@ -99,7 +118,8 @@ int main()
 	headtex.loadFromImage(headband);
 	sf::Sprite headsprite;
 	headsprite.setTexture(headtex);
-	headsprite.setTextureRect(sf::IntRect(0, 0, w + 2 * d, h + 2 * d));
+	headsprite.setTextureRect(sf::IntRect(0, 0, w + 2 * d, h + 2 * d + hscore));
+	//headsprite.setPosition(0, hscore);
 	//start button
 	sf::Image startim;
 	startim.loadFromFile("pictures/start.png");
@@ -109,15 +129,22 @@ int main()
 	sf::Sprite startsprite;
 	startsprite.setTexture(starttex);
 	startsprite.setTextureRect(sf::IntRect(50, 50, (w + 2 * d)/3.1 , (h + 2 * d)/4));
-	startsprite.setPosition(w/3, h/3);
+	startsprite.setPosition(w/3, h/3 + hscore);
 	//draw wall
+	sf::RectangleShape wall(sf::Vector2f(w + 2*d, h + hscore + 2*d));
+	wall.setFillColor(sf::Color(200, 50, 50));
+
+	/*
 	sf::Image wallim;
 	wallim.loadFromFile("pictures/wall.jpg");
 	sf::Texture walltex;
 	walltex.loadFromImage(wallim);
 	sf::Sprite wallsprite;
 	wallsprite.setTexture(walltex);
+	//wallsprite.setColor(sf::Color::Red);
 	wallsprite.setTextureRect(sf::IntRect(0, 0, w+2 * d, h + 2 * d));
+	wallsprite.setPosition(0, hscore);
+	*/
 	//draw field
 	sf::Image fieldim;
 	fieldim.loadFromFile("pictures/field.jpg");
@@ -126,7 +153,7 @@ int main()
 	sf::Sprite fieldsprite;
 	fieldsprite.setTexture(fieldtex);
 	fieldsprite.setTextureRect(sf::IntRect(0, 0, w, h));
-	fieldsprite.setPosition(d,d);
+	fieldsprite.setPosition(d, hscore + d);
 	//texture snake
 	sf::Image snakeim;
 	snakeim.loadFromFile("pictures/snake.jpg");
@@ -151,7 +178,7 @@ int main()
 
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
-	sf::RenderWindow window(sf::VideoMode(w+2 * d, h+2 * d), "snake", sf::Style::Default, settings);
+	sf::RenderWindow window(sf::VideoMode(w+2 * d , h+2 * d + hscore), "snake", sf::Style::Default, settings);
 
 	while (window.isOpen())
 	{
@@ -164,15 +191,27 @@ int main()
 		}
 
 		window.clear();
-		if (flag > 0)
+		if (flag >= 0)
 		{
-			window.draw(wallsprite);
+			//window.draw(wallsprite);
+			window.draw(wall);
 			window.draw(fieldsprite);
 
 
+			std::ostringstream playerScoreString, playerLevelString;    
+			playerScoreString << score;		
+			text.setString("score:" + playerScoreString.str());
+			text.setPosition(0, hscore - d);
+			window.draw(text);
+			playerLevelString << level;
+			text.setString("level:" + playerLevelString.str());
+			text.setPosition(w/2, hscore - d);
+			window.draw(text);
+
 			//sf::RectangleShape field(sf::Vector2f(w, h));
 			//draw snake
-			tick();
+			if(flag > 0)
+				tick();
 			for (int i = 0; i < len; ++i)
 			{
 				//sf::RectangleShape quad(sf::Vector2f(scale, scale));
@@ -180,14 +219,14 @@ int main()
 				//window.draw(quad);
 
 				sf::CircleShape shape(scale/2.f);
-				shape.setPosition(d + s[i].x * scale, d + s[i].y * scale);
+				shape.setPosition(d + s[i].x * scale, d + s[i].y * scale + hscore);
 				shape.setTexture(&snaketex);
 				shape.setTextureRect(sf::IntRect(100, 100, 200, 200));
 				window.draw(shape);
 				if (i < len - 1)
 				{
 					sf::CircleShape shape1(12.f);
-					shape1.setPosition(d + (s[i].x + s[i + 1].x) / 2.0 * scale, d + (s[i].y + s[i + 1].y) / 2.0 * scale);
+					shape1.setPosition(d + (s[i].x + s[i + 1].x) / 2.0 * scale, d + (s[i].y + s[i + 1].y) / 2.0 * scale + hscore);
 					shape1.setTexture(&snaketex);
 					shape1.setTextureRect(sf::IntRect(100, 100, 200, 200));
 					window.draw(shape1);
@@ -200,7 +239,7 @@ int main()
 			{
 				double k = 1.5;//retewt
 				sf::RectangleShape quad(sf::Vector2f(k * scale, k  * scale));
-				quad.setPosition(d + f[i].x * scale - scale * (k-1)/2, d + f[i].y * scale - scale*(k-1)/2);
+				quad.setPosition(d + f[i].x * scale - scale * (k-1)/2, d + f[i].y * scale - scale*(k-1)/2 + hscore);
 				quad.setTexture(&appletex);
 				quad.setTextureRect(sf::IntRect(0, 0, 380, 380));
 				window.draw(quad);
@@ -210,6 +249,7 @@ int main()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { dir = 1; }
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) { dir = 2; }
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) { dir = 4; }
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) { flag = 0; }
 		}
 		else
 		{
@@ -219,7 +259,7 @@ int main()
 
 			window.draw(startsprite);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { flag += 1; }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { flag += 1; std::cout << flag << std::endl; }
 
 		window.display();
 	}
