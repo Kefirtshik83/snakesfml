@@ -18,22 +18,50 @@ int i =  5;
 
 
 
+class Picture
+{
+public:
+	float x_position, y_position;
+	int x1_im, x2_im, y1_im, y2_im; //size of cut out rectangle
+	sf::Image image;
+	sf::Texture texture;
+	sf::Sprite sprite;
+	std::string pic_name; //name of picture
+	Picture(std::string pic_name, float x_position=0, float y_position=0, int x1_im=-1,  int y1_im=-1, int x2_im = -1, int y2_im=-1) : x_position(x_position), y_position(y_position),
+		x1_im(x1_im), x2_im(x2_im), y1_im(y1_im), y2_im(y2_im), pic_name(pic_name)
+	{
+		image.loadFromFile("pictures/" + pic_name);
+		texture.loadFromImage(image);
+		sprite.setTexture(texture);
+		sprite.setTextureRect(sf::IntRect(x1_im, y1_im, x2_im, y2_im));
+		sprite.setPosition(x_position, y_position);
+	}
+	void Create_Mask(int r, int g, int b, int a)
+	{
+		image.createMaskFromColor(sf::Color(r, g, b, a), 0);
+		texture.loadFromImage(image);
+		sprite.setTexture(texture);
+		sprite.setTextureRect(sf::IntRect(x1_im, y1_im, x2_im, y2_im));
+		sprite.setPosition(x_position, y_position);
+	}
 
+};
 
 sf::Clock cl;
 sf::Time t = cl.getElapsedTime();
 
 
 
-struct snake
+class Snake
 {
+public:
 	int x;
 	int y;
-};
-struct snake s[600]; // s[0] - head
+} s[600]; // s[0] - head
 
-struct fruct
+class fruit
 {
+public:
 	int x;
 	int y;
 } f[6];
@@ -112,48 +140,16 @@ int main()
 
 
 	//headband
-	sf::Image headband;
-	headband.loadFromFile("pictures/headband.jpg");
-	sf::Texture headtex;
-	headtex.loadFromImage(headband);
-	sf::Sprite headsprite;
-	headsprite.setTexture(headtex);
-	headsprite.setTextureRect(sf::IntRect(0, 0, w + 2 * d, h + 2 * d + hscore));
-	//headsprite.setPosition(0, hscore);
+	Picture headband("headband.jpg", 0, 0, 0, 0, w + 2 * d, h + 2 * d + hscore);
 	//start button
-	sf::Image startim;
-	startim.loadFromFile("pictures/start.png");
-	startim.createMaskFromColor(sf::Color(255, 255, 255, 255), 0);
-	sf::Texture starttex;
-	starttex.loadFromImage(startim);
-	sf::Sprite startsprite;
-	startsprite.setTexture(starttex);
-	startsprite.setTextureRect(sf::IntRect(50, 50, (w + 2 * d)/3.1 , (h + 2 * d)/4));
-	startsprite.setPosition(w/3, h/3 + hscore);
+	Picture start_button("start.png", w / 3, h / 3 + score, 50, 50, (w + 2 * d) / 3.1, (h + 2 * d) / 4);
+	start_button.Create_Mask(255, 255, 255, 255);
 	//draw wall
 	sf::RectangleShape wall(sf::Vector2f(w + 2*d, h + hscore + 2*d));
 	wall.setFillColor(sf::Color(200, 50, 50));
 
-	/*
-	sf::Image wallim;
-	wallim.loadFromFile("pictures/wall.jpg");
-	sf::Texture walltex;
-	walltex.loadFromImage(wallim);
-	sf::Sprite wallsprite;
-	wallsprite.setTexture(walltex);
-	//wallsprite.setColor(sf::Color::Red);
-	wallsprite.setTextureRect(sf::IntRect(0, 0, w+2 * d, h + 2 * d));
-	wallsprite.setPosition(0, hscore);
-	*/
 	//draw field
-	sf::Image fieldim;
-	fieldim.loadFromFile("pictures/field.jpg");
-	sf::Texture fieldtex;
-	fieldtex.loadFromImage(fieldim);
-	sf::Sprite fieldsprite;
-	fieldsprite.setTexture(fieldtex);
-	fieldsprite.setTextureRect(sf::IntRect(0, 0, w, h));
-	fieldsprite.setPosition(d, hscore + d);
+	Picture field("field.jpg", d, hscore + d, 0, 0, w, h);
 	//texture snake
 	sf::Image snakeim;
 	snakeim.loadFromFile("pictures/snake.jpg");
@@ -195,7 +191,7 @@ int main()
 		{
 			//window.draw(wallsprite);
 			window.draw(wall);
-			window.draw(fieldsprite);
+			window.draw(field.sprite);
 
 
 			std::ostringstream playerScoreString, playerLevelString;    
@@ -214,9 +210,6 @@ int main()
 				tick();
 			for (int i = 0; i < len; ++i)
 			{
-				//sf::RectangleShape quad(sf::Vector2f(scale, scale));
-				//quad.setPosition(d + s[i].x*scale, d + s[i].y * scale);
-				//window.draw(quad);
 
 				sf::CircleShape shape(scale/2.f);
 				shape.setPosition(d + s[i].x * scale, d + s[i].y * scale + hscore);
@@ -254,10 +247,10 @@ int main()
 		else
 		{
 
-			window.draw(headsprite);
+			window.draw(headband.sprite);
 
 
-			window.draw(startsprite);
+			window.draw(start_button.sprite);
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { flag += 1; std::cout << flag << std::endl; }
 
