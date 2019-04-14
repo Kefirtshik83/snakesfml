@@ -3,72 +3,15 @@
 #include <sstream>
 #include <vector>
 #include <cmath>
-
-double time1 = 600000;
+#include "picture.h"
+#include "Field.h"
+#include "variables.cpp"
+#include "Fruit.h"
+#include "Snake.h"
 
 //1-right  2-up  3-left   4-down
-int flag = -1; //start picture
-int i =  5;
-
-class Picture
-{
-public:
-	float x_position, y_position;
-	int x1_im, x2_im, y1_im, y2_im; //size of cut out rectangle
-	sf::Image image;
-	sf::Texture texture;
-	sf::Sprite sprite;
-	std::string pic_name; //name of picture
-	Picture(std::string pic_name, float x_position=0, float y_position=0, int x1_im=-1,  int y1_im=-1, int x2_im = -1, int y2_im=-1) : x_position(x_position), y_position(y_position),
-		x1_im(x1_im), x2_im(x2_im), y1_im(y1_im), y2_im(y2_im), pic_name(pic_name)
-	{
-		image.loadFromFile("pictures/" + pic_name);
-		texture.loadFromImage(image);
-		sprite.setTexture(texture);
-		sprite.setTextureRect(sf::IntRect(x1_im, y1_im, x2_im, y2_im));
-		sprite.setPosition(x_position, y_position);
-	}
-	void Create_Mask(int r, int g, int b, int a)
-	{
-		image.createMaskFromColor(sf::Color(r, g, b, a), 0);
-		texture.loadFromImage(image);
-		sprite.setTexture(texture);
-		sprite.setTextureRect(sf::IntRect(x1_im, y1_im, x2_im, y2_im));
-		sprite.setPosition(x_position, y_position);
-	}
-
-};
-
-sf::Clock cl;
-sf::Time t = cl.getElapsedTime();
-
-class Field
-{
-public:
-	int n = 50, m = 30;
-	int scale = 24;
-	int d = 20;
-	int w = scale * n;
-	int h_field_for_score = 60;
-	int score = 0;
-	int h = scale * m;
-
-} field;
-
-class Fruit
-{
-public:
-	int x;
-	int y;
-} f[6];
-
-struct point
-{
-	int x;
-	int y;
-};
-
-class Snake1
+/*
+class Snake
 {
 
 public:
@@ -80,7 +23,7 @@ public:
 	sf::Texture texture;
 
 
-	Snake1(int dir = 1, int len = 2, int level = 1) : dir(dir), len(len), level(level)
+	Snake(int dir = 1, int len = 2, int level = 1) : dir(dir), len(len), level(level)
 	{ 
 		for (int i = 0; i < len; ++i)
 		{
@@ -153,7 +96,7 @@ public:
 			}
 		}
 	}
-} snake(1, 2, 1);
+}*/ 
 
 
 
