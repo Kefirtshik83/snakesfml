@@ -10,4 +10,4 @@ public:
 	int score = 0;
 	int h = scale * m;
 
-} field;
+};

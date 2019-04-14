@@ -120,17 +120,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Fruit.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Picture.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="variables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Field.h" />
     <ClInclude Include="Fruit.h" />
-    <ClInclude Include="Header.h" />
-    <ClInclude Include="Header1.h" />
-    <ClInclude Include="Picture.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Picture.h">
+      <DeploymentContent>true</DeploymentContent>
+    </ClInclude>
+    <ClInclude Include="point.h">
+      <DeploymentContent>true</DeploymentContent>
+    </ClInclude>
     <ClInclude Include="Snake.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

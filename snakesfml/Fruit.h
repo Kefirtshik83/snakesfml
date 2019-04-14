@@ -1,7 +1,11 @@
 #pragma once
+#include <vector>
+#include "point.h"
+
+
 class Fruit
 {
 public:
-	int x;
-	int y;
-} f[6];
+	std::vector <point> f;
+	Fruit();
+};
