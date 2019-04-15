@@ -1,13 +1,13 @@
 #include "Snake.h"
 
 
-Snake :: Snake(int dir, int len, int level) : dir(dir), len(len), level(level)
+Snake::Snake(int dir, int len, int level, int y0, std::string ss) : dir(dir), len(len), level(level)
 {
 	for (int i = 0; i < len; ++i)
 	{
-		s.push_back({ 10, 15 + i });
+		s.push_back({ 10, y0 + i });
 	}
-	image_s.loadFromFile("pictures/snake.jpg");
+	image_s.loadFromFile(ss);
 	texture_s.loadFromImage(image_s);
 }
 

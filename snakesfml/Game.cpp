@@ -66,21 +66,71 @@ void Game::tick()
 			s[0].y = 10;
 			score = 0;
 		}
+		if (count_gamers > 1)
+		{
+			for (int i = sn.len - 1; i > 0; --i)
+			{
+				sn.s[i].x = sn.s[i - 1].x;
+				sn.s[i].y = sn.s[i - 1].y;
+			}
+
+
+
+			if (sn.dir == 1) { sn.s[0].x++; }
+			if (sn.dir == 2) { sn.s[0].y--; }
+			if (sn.dir == 3) { sn.s[0].x--; }
+			if (sn.dir == 4) { sn.s[0].y++; }
+		}
 	}
 
 	for (int i = 0; i < 6; ++i)
 	{
-	if (s[0].x == f[i].x && s[0].y == f[i].y)
-	{
-		s.push_back({ -150,-150 });
-		++score;
-		level = 1 + score / 1;
-		f[i].x = rand() % n; //
-		f[i].y = rand() % m;
-		len++;
+		if (s[0].x == f[i].x && s[0].y == f[i].y)
+		{
+			s.push_back({ -150,-150 });
+			++score;
+			level = 1 + score / 1;
+			f[i].x = rand() % n; //
+			f[i].y = rand() % m;
+			len++;
 
 
+		}
 	}
+	if (count_gamers > 1)
+	{
+		for (int i = 0; i < 6; ++i)
+		{
+			if (sn.s[0].x == f[i].x && sn.s[0].y == f[i].y)
+			{
+				sn.s.push_back({ -150,-150 });
+				++sn.score;
+				sn.level = 1 + sn.score / 1;
+				f[i].x = rand() % n; //
+				f[i].y = rand() % m;
+				sn.len++;
+
+
+			}
+		}
+
+		if (who_is_win == 0)
+		{
+			for (int i = 0; i < sn.s.size(); ++i)
+			{
+				if (s[0].x == sn.s[i].x && s[0].y == sn.s[i].y)
+				{
+					who_is_win = 2;
+				}
+			}
+			for (int i = 0; i < s.size(); ++i)
+			{
+				if (sn.s[0].x == s[i].x && sn.s[0].y == s[i].y)
+				{
+					who_is_win = 1;
+				}
+			}
+		}
 	}
 }
 
@@ -97,22 +147,24 @@ void Game::draw_score(sf::RenderWindow &window)
 	window.draw(text);
 }
 
-void Game::draw_snake(sf::RenderWindow &window)
+void Game::draw_snake(sf::RenderWindow &window, std::vector<point> sn_)
 {
 	//draw snake
 
-	for (int i = 0; i < len; ++i)
+	for (int i = 0; i < sn_.size(); ++i)
 	{
-		shape.setPosition(d + s[i].x * scale, d + s[i].y * scale + h_field_for_score);
+		shape.setPosition(d + sn_[i].x * scale, d + sn_[i].y * scale + h_field_for_score);
 		window.draw(shape);
-		if (i < len - 1)
+		if (i < sn_.size() - 1)
 		{
-			shape1.setPosition(d + (s[i].x + s[i + 1].x) / 2.0 * scale, d + (s[i].y + s[i + 1].y) / 2.0 * scale + h_field_for_score);
+			shape1.setPosition(d + (sn_[i].x + sn_[i + 1].x) / 2.0 * scale, d + (sn_[i].y + sn_[i + 1].y) / 2.0 * scale + h_field_for_score);
 			window.draw(shape1);
 		}
 		//std:: cout << cl.getElapsedTime().asMilliseconds() << std::endl;
 	}
+
 }
+
 void Game::draw_fruit(sf::RenderWindow &window)
 {
 	//draw fructs
@@ -155,9 +207,43 @@ void Game::game_draw(sf::RenderWindow & window)
 			draw_score(window);
 			if (flag > 0)
 				tick();
-			draw_snake(window);
+			/*
+			if(count_gamers > 1)
+				shape.setFillColor(sf::Color::Red);
+			draw_snake(window, s);
+			if (count_gamers > 1)
+			{
+				shape.setFillColor(sf::Color::Green);
+				draw_snake(window, sn.s);
+			}
+			*/
+			if (count_gamers == 1)
+			{
+				draw_snake(window, s);
+			}
+			else
+			{
+				if (who_is_win == 0)
+				{
+					shape.setFillColor(sf::Color::Red);
+					draw_snake(window, s);
+					shape.setFillColor(sf::Color::Green);
+					draw_snake(window, sn.s);
+				}
+				if (who_is_win == 1)
+				{
+					shape.setFillColor(sf::Color::Red);
+					draw_snake(window, s);
+				}
+				if (who_is_win == 2)
+				{
+					shape.setFillColor(sf::Color::Green);
+					draw_snake(window, sn.s);
+				}
+			}
 			draw_fruit(window);
 			control();
+			sn.control();
 		}
 		else
 		{
