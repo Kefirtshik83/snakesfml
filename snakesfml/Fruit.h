@@ -6,7 +6,7 @@
 struct fr
 {
 	int x, y;
-	std::string s;
+	std::string name_f;
 };
 
 class Fruit

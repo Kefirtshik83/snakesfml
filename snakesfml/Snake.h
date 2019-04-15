@@ -23,6 +23,7 @@ public:
 	sf::Texture texture_s;
 
 
+
 	Snake(int dir = 1, int len = 2, int level = 1);
 	void control(); //обработка событий клавиатуры
 	//void tick(); //движение змеи, проверка на соударение
