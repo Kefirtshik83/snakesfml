@@ -19,8 +19,8 @@ public:
 	int dir;
 	int len;
 	std::vector <point> s;
-	sf::Image image;
-	sf::Texture texture;
+	sf::Image image_s;
+	sf::Texture texture_s;
 
 
 	Snake(int dir = 1, int len = 2, int level = 1);

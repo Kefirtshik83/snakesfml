@@ -4,6 +4,6 @@ Fruit::Fruit()
 {
 	for (int i = 0; i < 6; ++i)
 	{
-		f.push_back({ rand(), rand() });
+		f.push_back({ rand(), rand(), "pictures/apple1.png" });
 	}
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "Picture.h"
 class Field
 {
 public:
@@ -9,5 +10,4 @@ public:
 	int h_field_for_score = 60;
 	int score = 0;
 	int h = scale * m;
-
 };
