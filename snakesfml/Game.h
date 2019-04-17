@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "Picture.h"
 #include "Field.h"
 #include "Fruit.h"
@@ -6,13 +7,18 @@
 #include "Snake.h"
 #include "Snake_1.h"
 
-class Game : public Field, public Fruit, public Snake
+class Game 
 {
 public:
+	const int ooo = 1200;
+	Field field;
 	Picture headband;
 	Picture start_button;
-	Picture field;
-	Snake_1 sn;
+	Picture field_picture;
+
+	Fruit fruit;
+	Snake snake_1;
+	Snake_1 snake_2;
 
 	//texture apple
 	sf::Image appleim;
@@ -37,4 +43,5 @@ public:
 	void draw_fruit(sf::RenderWindow &window);
 	void draw_field(sf::RenderWindow &window);
 	void game_draw(sf::RenderWindow &window);
+	
 };

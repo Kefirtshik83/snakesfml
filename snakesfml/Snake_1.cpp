@@ -7,7 +7,7 @@ void Snake_1 :: control()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { dir = 4; }
 }
 
-Snake_1::Snake_1(): Snake(1, 2, 1, 18, "pictures/wall4")
+Snake_1::Snake_1(): Snake(1, 2, 1, 18, "pictures/snake.jpg")
 {
 
 }

@@ -1,8 +1,13 @@
 #include "Game.h"
 
-Game::Game() : Snake(1, 2, 1), Fruit(), headband("snake1.jpg", 0, 0, 0, 0, w + 2 * d, h + 2 * d + h_field_for_score), start_button("start.png", w / 3, h / 3 + h_field_for_score, 50, 50, (w + 2 * d) / 3.1, (h + 2 * d) / 4), wall(sf::Vector2f(w + 2 * d, h + h_field_for_score + 2 * d)), text("", font, 20), 
-field("field.jpg", d, h_field_for_score + d, 0, 0, w, h), shape(scale / 2.f), shape1(12.f)
-{
+Game::Game() : field(50, 30, 24, 20, 60), headband("snake1.jpg", 0, 0, 0, 0, field.w + 2 * field.d, field.h + 2 * field.d + field.h_field_for_score),
+start_button("start.png", field.w / 3, field.h / 3 + field.h_field_for_score, 50, 50, (field.w + 2 * field.d) / 3.1, (field.h + 2 * field.d) / 4),
+wall(sf::Vector2f(field.w + 2 * field.d, field.h + field.h_field_for_score + 2 * field.d)),
+text("", font, 20),
+field_picture("field.jpg", field.d, field.h_field_for_score + field.d, 0, 0, field.w, field.h),
+shape(field.scale / 2.f), shape1(12.f)
+{	
+	std::cout << "field.w = " << field.w << std::endl;
 	font.loadFromFile("pictures/CyrilicOld.TTF");//передаем нашему шрифту файл шрифта
 	sf::Text text("", font, 20);//создаем объект текст. закидываем в объект текст строку, шрифт, размер шрифта(в пикселях);//сам объект текст (не строка)
 	//text.setColor(sf::Color::Red);//покрасили текст в красный. если убрать эту строку, то по умолчанию он белый
@@ -17,82 +22,82 @@ field("field.jpg", d, h_field_for_score + d, 0, 0, w, h), shape(scale / 2.f), sh
 	appletex.loadFromImage(appleim);
 
 
-	shape.setTexture(&texture_s);
+	shape.setTexture(&snake_1.texture_s);
 	shape.setTextureRect(sf::IntRect(100, 100, 200, 200));
-	shape1.setTexture(&texture_s);
+	shape1.setTexture(&snake_1.texture_s);
 	shape1.setTextureRect(sf::IntRect(100, 100, 200, 200));
 }
 
 void Game::tick()
 {
-	if (cl.getElapsedTime().asMicroseconds() - t.asMicroseconds() > time1*pow(0.9, level - 1))
+	if (cl.getElapsedTime().asMicroseconds() - t.asMicroseconds() > time1*pow(0.9, snake_1.level - 1))
 	{
 		t = cl.getElapsedTime();
 
-		for (int i = len - 1; i > 0; --i)
+		for (int i = snake_1.len - 1; i > 0; --i)
 		{
-			s[i].x = s[i - 1].x;
-			s[i].y = s[i - 1].y;
+			snake_1.s[i].x = snake_1.s[i - 1].x;
+			snake_1.s[i].y = snake_1.s[i - 1].y;
 		}
 		for (int i = 0; i < 6; ++i)
 		{
-			f[i].x = f[i].x % n;
-			f[i].y = f[i].y % m;
+			fruit.f[i].x = fruit.f[i].x % field.n;
+			fruit.f[i].y = fruit.f[i].y % field.m;
 		}
 
 
 
-		if (dir == 1) { s[0].x++; }
-		if (dir == 2) { s[0].y--; }
-		if (dir == 3) { s[0].x--; }
-		if (dir == 4) { s[0].y++; }
+		if (snake_1.dir == 1) { snake_1.s[0].x++; }
+		if (snake_1.dir == 2) { snake_1.s[0].y--; }
+		if (snake_1.dir == 3) { snake_1.s[0].x--; }
+		if (snake_1.dir == 4) { snake_1.s[0].y++; }
 
-		for (int i = 1; i < len; ++i)
+		for (int i = 1; i < snake_1.len; ++i)
 		{
-			if (s[i].x == s[0].x && s[i].y == s[0].y)
+			if (snake_1.s[i].x == snake_1.s[0].x && snake_1.s[i].y == snake_1.s[0].y)
 			{
 				flag = -1;
-				len = 2;
-				s[0].x = 15;
-				s[0].y = 10;
-				score = 0;
+				snake_1.len = 2;
+				snake_1.s[0].x = 15;
+				snake_1.s[0].y = 10;
+				snake_1.score = 0;
 			}
 		}
-		if (s[0].x * scale + d < d || s[0].x * scale + scale + d > w + d || s[0].y * scale + d < d || s[0].y * scale + scale + d> h + d)
+		if (snake_1.s[0].x * field.scale + field.d < field.d || snake_1.s[0].x *field.scale + field.scale + field.d > field.w + field.d || snake_1.s[0].y * field.scale + field.d < field.d || snake_1.s[0].y * field.scale + field.scale + field.d> field.h + field.d)
 		{
 			flag = -1;
-			len = 2;
-			s[0].x = 15;
-			s[0].y = 10;
-			score = 0;
+			snake_1.len = 2;
+			snake_1.s[0].x = 15;
+			snake_1.s[0].y = 10;
+			snake_1.score = 0;
 		}
 		if (count_gamers > 1)
 		{
-			for (int i = sn.len - 1; i > 0; --i)
+			for (int i = snake_2.len - 1; i > 0; --i)
 			{
-				sn.s[i].x = sn.s[i - 1].x;
-				sn.s[i].y = sn.s[i - 1].y;
+				snake_2.s[i].x = snake_2.s[i - 1].x;
+				snake_2.s[i].y = snake_2.s[i - 1].y;
 			}
 
 
 
-			if (sn.dir == 1) { sn.s[0].x++; }
-			if (sn.dir == 2) { sn.s[0].y--; }
-			if (sn.dir == 3) { sn.s[0].x--; }
-			if (sn.dir == 4) { sn.s[0].y++; }
+			if (snake_2.dir == 1) { snake_2.s[0].x++; }
+			if (snake_2.dir == 2) { snake_2.s[0].y--; }
+			if (snake_2.dir == 3) { snake_2.s[0].x--; }
+			if (snake_2.dir == 4) { snake_2.s[0].y++; }
 		}
 	}
 
 	for (int i = 0; i < 6; ++i)
 	{
-		if (s[0].x == f[i].x && s[0].y == f[i].y)
+		if (snake_1.s[0].x == fruit.f[i].x && snake_1.s[0].y == fruit.f[i].y)
 		{
-			s.push_back({ -150,-150 });
-			++score;
-			level = 1 + score / 1;
-			f[i].x = rand() % n; //
-			f[i].y = rand() % m;
-			len++;
+			snake_1.s.push_back({ -150,-150 });
+			++snake_1.score;
+			snake_1.level = 1 + snake_1.score / 1;
+			fruit.f[i].x = rand() % field.n; //
+			fruit.f[i].y = rand() % field.m;
+			snake_1.len++;
 
 
 		}
@@ -101,14 +106,14 @@ void Game::tick()
 	{
 		for (int i = 0; i < 6; ++i)
 		{
-			if (sn.s[0].x == f[i].x && sn.s[0].y == f[i].y)
+			if (snake_2.s[0].x == fruit.f[i].x && snake_2.s[0].y == fruit.f[i].y)
 			{
-				sn.s.push_back({ -150,-150 });
-				++sn.score;
-				sn.level = 1 + sn.score / 1;
-				f[i].x = rand() % n; //
-				f[i].y = rand() % m;
-				sn.len++;
+				snake_2.s.push_back({ -150,-150 });
+				++snake_2.score;
+				snake_2.level = 1 + snake_2.score / 1;
+				fruit.f[i].x = rand() % field.n; //
+				fruit.f[i].y = rand() % field.m;
+				snake_2.len++;
 
 
 			}
@@ -116,16 +121,16 @@ void Game::tick()
 
 		if (who_is_win == 0)
 		{
-			for (int i = 0; i < sn.s.size(); ++i)
+			for (int i = 0; i < snake_2.s.size(); ++i)
 			{
-				if (s[0].x == sn.s[i].x && s[0].y == sn.s[i].y)
+				if (snake_1.s[0].x == snake_2.s[i].x && snake_1.s[0].y == snake_2.s[i].y)
 				{
 					who_is_win = 2;
 				}
 			}
-			for (int i = 0; i < s.size(); ++i)
+			for (int i = 0; i < snake_1.s.size(); ++i)
 			{
-				if (sn.s[0].x == s[i].x && sn.s[0].y == s[i].y)
+				if (snake_2.s[0].x == snake_1.s[i].x && snake_2.s[0].y == snake_1.s[i].y)
 				{
 					who_is_win = 1;
 				}
@@ -137,13 +142,13 @@ void Game::tick()
 void Game::draw_score(sf::RenderWindow &window)
 {
 	std::ostringstream playerScoreString, playerLevelString;
-	playerScoreString << score;
+	playerScoreString << snake_1.score;
 	text.setString("score:" + playerScoreString.str());
-	text.setPosition(d, h_field_for_score - d);
+	text.setPosition(field.d, field.h_field_for_score - field.d);
 	window.draw(text);
-	playerLevelString << level;
+	playerLevelString << snake_1.level;
 	text.setString("level:" + playerLevelString.str());
-	text.setPosition(w / 2, h_field_for_score - d);
+	text.setPosition(field.w / 2, field.h_field_for_score - field.d);
 	window.draw(text);
 }
 
@@ -153,11 +158,11 @@ void Game::draw_snake(sf::RenderWindow &window, std::vector<point> sn_)
 
 	for (int i = 0; i < sn_.size(); ++i)
 	{
-		shape.setPosition(d + sn_[i].x * scale, d + sn_[i].y * scale + h_field_for_score);
+		shape.setPosition(field.d + sn_[i].x * field.scale, field.d + sn_[i].y * field.scale + field.h_field_for_score);
 		window.draw(shape);
 		if (i < sn_.size() - 1)
 		{
-			shape1.setPosition(d + (sn_[i].x + sn_[i + 1].x) / 2.0 * scale, d + (sn_[i].y + sn_[i + 1].y) / 2.0 * scale + h_field_for_score);
+			shape1.setPosition(field.d + (sn_[i].x + sn_[i + 1].x) / 2.0 * field.scale, field.d + (sn_[i].y + sn_[i + 1].y) / 2.0 * field.scale + field.h_field_for_score);
 			window.draw(shape1);
 		}
 		//std:: cout << cl.getElapsedTime().asMilliseconds() << std::endl;
@@ -171,8 +176,8 @@ void Game::draw_fruit(sf::RenderWindow &window)
 	for (int i = 0; i < 6; ++i)
 	{
 		double k = 1.5;//retewt
-		sf::RectangleShape quad(sf::Vector2f(k * scale, k  * scale));
-		quad.setPosition(d + f[i].x * scale - scale * (k - 1) / 2, d + f[i].y * scale - scale * (k - 1) / 2 + h_field_for_score);
+		sf::RectangleShape quad(sf::Vector2f(k * field.scale, k  * field.scale));
+		quad.setPosition(field.d + fruit.f[i].x * field.scale - field.scale * (k - 1) / 2, field.d + fruit.f[i].y * field.scale - field.scale * (k - 1) / 2 + field.h_field_for_score);
 		quad.setTexture(&appletex);
 		quad.setTextureRect(sf::IntRect(0, 0, 380, 380));
 		window.draw(quad);
@@ -182,13 +187,14 @@ void Game::draw_field(sf::RenderWindow &window)
 {
 	//window.draw(wallsprite);
 	window.draw(wall);
-	window.draw(field.sprite);
+	window.draw(field_picture.sprite);
 }
 
 
 
 void Game::game_draw(sf::RenderWindow & window)
 {
+	
 
 
 	while (window.isOpen())
@@ -219,35 +225,36 @@ void Game::game_draw(sf::RenderWindow & window)
 			*/
 			if (count_gamers == 1)
 			{
-				draw_snake(window, s);
+				draw_snake(window, snake_1.s);
 			}
 			else
 			{
 				if (who_is_win == 0)
 				{
 					shape.setFillColor(sf::Color::Red);
-					draw_snake(window, s);
+					draw_snake(window, snake_1.s);
 					shape.setFillColor(sf::Color::Green);
-					draw_snake(window, sn.s);
+					draw_snake(window, snake_2.s);
 				}
 				if (who_is_win == 1)
 				{
 					shape.setFillColor(sf::Color::Red);
-					draw_snake(window, s);
+					draw_snake(window, snake_1.s);
 				}
 				if (who_is_win == 2)
 				{
 					shape.setFillColor(sf::Color::Green);
-					draw_snake(window, sn.s);
+					draw_snake(window, snake_2.s);
 				}
 			}
 			draw_fruit(window);
-			control();
-			sn.control();
+			snake_1.control();
+			snake_2.control();
 		}
 		else
 		{
 			window.draw(headband.sprite);
+			//std::cout << "hui" << std::endl;
 			window.draw(start_button.sprite);
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { flag += 1; std::cout << flag << std::endl; }
@@ -255,7 +262,7 @@ void Game::game_draw(sf::RenderWindow & window)
 		sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
 		sf::Vector2f pos = (window).mapPixelToCoords(pixelPos);
 		//std::cout << pos.x << " " << pos.y << std::endl;
-		if (pos.x > 434 && pos.x < 807 && pos.y > (h + 2 * d) / 4 && pos.y < 418 && pos.y > 327 && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		if (pos.x > 434 && pos.x < 807 && pos.y > (field.h + 2 * field.d) / 4 && pos.y < 418 && pos.y > 327 && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			flag += 1;
 		}
