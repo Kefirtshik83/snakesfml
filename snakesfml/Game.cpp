@@ -1,12 +1,18 @@
 #include "Game.h"
 
-Game::Game() : field(50, 30, 24, 20, 60), headband("snake1.jpg", 0, 0, 0, 0, field.w + 2 * field.d, field.h + 2 * field.d + field.h_field_for_score),
+Game::Game() : field(50, 30, 24, 20, 60),
+one_player_button("one_player.png", field.w / 3, field.h / 5 + field.h_field_for_score, 0, 0, 204, 54),
+two_player_button("two_players.png", field.w / 3, field.h / 2 + field.h_field_for_score, 0, 0, 204, 54),
+one_snake_button("one_snake.png", field.w / 3, field.h / 5 + field.h_field_for_score, 0, 0, 204, 54),
+two_snake_button("two_snakes.png", field.w / 3, field.h / 2 + field.h_field_for_score, 0, 0, 204, 54),
+headband("snake1.jpg", 0, 0, 0, 0, field.w + 2 * field.d, field.h + 2 * field.d + field.h_field_for_score),
 start_button("start.png", field.w / 3, field.h / 3 + field.h_field_for_score, 50, 50, (field.w + 2 * field.d) / 3.1, (field.h + 2 * field.d) / 4),
 wall(sf::Vector2f(field.w + 2 * field.d, field.h + field.h_field_for_score + 2 * field.d)),
 text("", font, 20),
 field_picture("field.jpg", field.d, field.h_field_for_score + field.d, 0, 0, field.w, field.h),
 shape(field.scale / 2.f), shape1(12.f)
 {	
+
 	std::cout << "field.w = " << field.w << std::endl;
 	font.loadFromFile("pictures/CyrilicOld.TTF");//передаем нашему шрифту файл шрифта
 	sf::Text text("", font, 20);//создаем объект текст. закидываем в объект текст строку, шрифт, размер шрифта(в пикселях);//сам объект текст (не строка)
@@ -28,7 +34,9 @@ shape(field.scale / 2.f), shape1(12.f)
 	shape1.setTextureRect(sf::IntRect(100, 100, 200, 200));
 }
 
-void Game::tick()
+
+
+void Game::one_g_one_s_tick()
 {
 	if (cl.getElapsedTime().asMicroseconds() - t.asMicroseconds() > time1*pow(0.9, snake_1.level - 1))
 	{
@@ -56,35 +64,44 @@ void Game::tick()
 		{
 			if (snake_1.s[i].x == snake_1.s[0].x && snake_1.s[i].y == snake_1.s[0].y)
 			{
-				flag = -1;
+				play = 0;
+				one_player = 0;
+				two_player = 0;
+				one_snake = 0;
+				two_snake = 0;
+				snake_1.s.resize(2);
 				snake_1.len = 2;
+				snake_1.level = 1;
 				snake_1.s[0].x = 15;
 				snake_1.s[0].y = 10;
 				snake_1.score = 0;
+				snake_2.s.resize(2);
+				snake_2.len = 2;
+				snake_2.level = 1;
+				snake_2.s[0].x = 18;
+				snake_2.s[0].y = 10;
+				snake_2.score = 0;
 			}
 		}
-		if (snake_1.s[0].x * field.scale + field.d < field.d || snake_1.s[0].x *field.scale + field.scale + field.d > field.w + field.d || snake_1.s[0].y * field.scale + field.d < field.d || snake_1.s[0].y * field.scale + field.scale + field.d> field.h + field.d)
+		if (snake_1.s[0].x * field.scale + field.d < field.d || snake_1.s[0].x * field.scale + field.scale + field.d > field.w + field.d || snake_1.s[0].y * field.scale + field.d < field.d || snake_1.s[0].y * field.scale + field.scale + field.d> field.h + field.d)
 		{
-			flag = -1;
+			play = 0;
+			one_player = 0;
+			two_player = 0;
+			one_snake = 0;
+			two_snake = 0;
+			snake_1.s.resize(2);
 			snake_1.len = 2;
+			snake_1.level = 1;
 			snake_1.s[0].x = 15;
 			snake_1.s[0].y = 10;
 			snake_1.score = 0;
-		}
-		if (count_gamers > 1)
-		{
-			for (int i = snake_2.len - 1; i > 0; --i)
-			{
-				snake_2.s[i].x = snake_2.s[i - 1].x;
-				snake_2.s[i].y = snake_2.s[i - 1].y;
-			}
-
-
-
-			if (snake_2.dir == 1) { snake_2.s[0].x++; }
-			if (snake_2.dir == 2) { snake_2.s[0].y--; }
-			if (snake_2.dir == 3) { snake_2.s[0].x--; }
-			if (snake_2.dir == 4) { snake_2.s[0].y++; }
+			snake_2.s.resize(2);
+			snake_2.len = 2;
+			snake_2.level = 1;
+			snake_2.s[0].x = 18;
+			snake_2.s[0].y = 10;
+			snake_2.score = 0;
 		}
 	}
 
@@ -102,42 +119,191 @@ void Game::tick()
 
 		}
 	}
-	if (count_gamers > 1)
+}
+
+void Game::one_g_two_s_tick()
+{
+	if (cl.getElapsedTime().asMicroseconds() - t.asMicroseconds() > time1*pow(0.9, snake_1.level - 1))
 	{
+		t = cl.getElapsedTime();
+		for (int i = snake_1.len - 1; i > 0; --i)
+		{
+			snake_1.s[i].x = snake_1.s[i - 1].x;
+			snake_1.s[i].y = snake_1.s[i - 1].y;
+		}
+
+		for (int i = snake_2.len - 1; i > 0; --i)
+		{
+			snake_2.s[i].x = snake_2.s[i - 1].x;
+			snake_2.s[i].y = snake_2.s[i - 1].y;
+		}
+
 		for (int i = 0; i < 6; ++i)
 		{
-			if (snake_2.s[0].x == fruit.f[i].x && snake_2.s[0].y == fruit.f[i].y)
+			fruit.f[i].x = fruit.f[i].x % field.n;
+			fruit.f[i].y = fruit.f[i].y % field.m;
+		}
+
+
+
+		if (snake_1.dir == 1) { snake_1.s[0].x++; }
+		if (snake_1.dir == 2) { snake_1.s[0].y--; }
+		if (snake_1.dir == 3) { snake_1.s[0].x--; }
+		if (snake_1.dir == 4) { snake_1.s[0].y++; }
+
+		if (snake_2.dir == 1) { snake_2.s[0].x++; }
+		if (snake_2.dir == 2) { snake_2.s[0].y--; }
+		if (snake_2.dir == 3) { snake_2.s[0].x--; }
+		if (snake_2.dir == 4) { snake_2.s[0].y++; }
+
+		for (int i = 1; i < snake_1.len; ++i)
+		{
+			if ((snake_1.s[i].x == snake_1.s[0].x && snake_1.s[i].y == snake_1.s[0].y)) //stolknoveniya pervoy zmei s soboy
 			{
-				snake_2.s.push_back({ -150,-150 });
-				++snake_2.score;
-				snake_2.level = 1 + snake_2.score / 1;
-				fruit.f[i].x = rand() % field.n; //
-				fruit.f[i].y = rand() % field.m;
-				snake_2.len++;
-
-
+				play = 0;
+				one_player = 0;
+				two_player = 0;
+				one_snake = 0;
+				two_snake = 0;
+				snake_1.s.resize(2);
+				snake_1.len = 2;
+				snake_1.level = 1;
+				snake_1.s[0].x = 15;
+				snake_1.s[0].y = 10;
+				snake_1.score = 0;
+				snake_2.s.resize(2);
+				snake_2.len = 2;
+				snake_2.level = 1;
+				snake_2.s[0].x = 18;
+				snake_2.s[0].y = 10;
+				snake_2.score = 0;
 			}
 		}
 
-		if (who_is_win == 0)
+		for (int i = 1; i < snake_2.len; ++i)
 		{
-			for (int i = 0; i < snake_2.s.size(); ++i)
+			if (snake_2.s[i].x == snake_2.s[0].x && snake_2.s[i].y == snake_2.s[0].y) //stolknovenia vtoroy zmei s soboy
 			{
-				if (snake_1.s[0].x == snake_2.s[i].x && snake_1.s[0].y == snake_2.s[i].y)
-				{
-					who_is_win = 2;
-				}
+				play = 0;
+				one_player = 0;
+				two_player = 0;
+				one_snake = 0;
+				two_snake = 0;
+				snake_1.s.resize(2);
+				snake_1.len = 2;
+				snake_1.level = 1;
+				snake_1.s[0].x = 15;
+				snake_1.s[0].y = 10;
+				snake_1.score = 0;
+				snake_2.s.resize(2);
+				snake_2.len = 2;
+				snake_2.level = 1;
+				snake_2.s[0].x = 18;
+				snake_2.s[0].y = 10;
+				snake_2.score = 0;
 			}
-			for (int i = 0; i < snake_1.s.size(); ++i)
-			{
-				if (snake_2.s[0].x == snake_1.s[i].x && snake_2.s[0].y == snake_1.s[i].y)
-				{
-					who_is_win = 1;
-				}
-			}
+		}
+		//stolknovenia zmey so stenkami
+		if ((snake_1.s[0].x * field.scale + field.d < field.d || snake_1.s[0].x * field.scale + field.scale + field.d > field.w + field.d || snake_1.s[0].y * field.scale + field.d < field.d || snake_1.s[0].y * field.scale + field.scale + field.d> field.h + field.d) || (snake_2.s[0].x * field.scale + field.d < field.d || snake_2.s[0].x * field.scale + field.scale + field.d > field.w + field.d || snake_2.s[0].y * field.scale + field.d < field.d || snake_2.s[0].y * field.scale + field.scale + field.d> field.h + field.d))
+		{
+			play = 0;
+			one_player = 0;
+			two_player = 0;
+			one_snake = 0;
+			two_snake = 0;
+			snake_1.s.resize(2);
+			snake_1.len = 2;
+			snake_1.level = 1;
+			snake_1.s[0].x = 15;
+			snake_1.s[0].y = 10;
+			snake_1.score = 0;
+			snake_2.s.resize(2);
+			snake_2.len = 2;
+			snake_2.level = 1;
+			snake_2.s[0].x = 18;
+			snake_2.s[0].y = 10;
+			snake_2.score = 0;
+		}
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		if ((snake_1.s[0].x == fruit.f[i].x && snake_1.s[0].y == fruit.f[i].y))
+		{
+			snake_1.s.push_back({ -150,-150 });
+			++snake_1.score;
+
+			snake_1.level = 1 + (snake_1.score+snake_2.score) / 1;
+			fruit.f[i].x = rand() % field.n; //
+			fruit.f[i].y = rand() % field.m;
+			snake_1.len++;
+
+		}
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		if ((snake_2.s[0].x == fruit.f[i].x && snake_2.s[0].y == fruit.f[i].y))
+		{
+			snake_2.s.push_back({ -150,-150 });
+			++snake_2.score;
+			snake_1.level = 1 + (snake_1.score + snake_2.score) / 1;
+			fruit.f[i].x = rand() % field.n; //
+			fruit.f[i].y = rand() % field.m;
+			snake_2.len++;
+
+		}
+	}
+
+
+	for (int i = 0; i < snake_2.s.size(); ++i)
+	{
+		if (snake_1.s[0].x == snake_2.s[i].x && snake_1.s[0].y == snake_2.s[i].y)
+		{
+			play = 0;
+			one_player = 0;
+			two_player = 0;
+			one_snake = 0;
+			two_snake = 0;
+			snake_1.s.resize(2);
+			snake_1.len = 2;
+			snake_1.level = 1;
+			snake_1.s[0].x = 15;
+			snake_1.s[0].y = 10;
+			snake_1.score = 0;
+			snake_2.s.resize(2);
+			snake_2.len = 2;
+			snake_2.level = 1;
+			snake_2.s[0].x = 18;
+			snake_2.s[0].y = 10;
+			snake_2.score = 0;
+		}
+	}
+	for (int i = 0; i < snake_1.s.size(); ++i)
+	{
+		if (snake_2.s[0].x == snake_1.s[i].x && snake_2.s[0].y == snake_1.s[i].y)
+		{
+			play = 0;
+			one_player = 0;
+			two_player = 0;
+			one_snake = 0;
+			two_snake = 0;
+			snake_1.s.resize(2);
+			snake_1.len = 2;
+			snake_1.level = 1;
+			snake_1.s[0].x = 15;
+			snake_1.s[0].y = 10;
+			snake_1.score = 0;
+			snake_2.s.resize(2);
+			snake_2.len = 2;
+			snake_2.level = 1;
+			snake_2.s[0].x = 18;
+			snake_2.s[0].y = 10;
+			snake_2.score = 0;
 		}
 	}
 }
+
 
 void Game::draw_score(sf::RenderWindow &window)
 {
@@ -183,6 +349,7 @@ void Game::draw_fruit(sf::RenderWindow &window)
 		window.draw(quad);
 	}
 }
+
 void Game::draw_field(sf::RenderWindow &window)
 {
 	//window.draw(wallsprite);
@@ -190,13 +357,73 @@ void Game::draw_field(sf::RenderWindow &window)
 	window.draw(field_picture.sprite);
 }
 
+void Game::chose_count_of_players(sf::RenderWindow &window, sf::Event event)
+{
+	{
+		if (!one_player && !two_player)
+		{
+
+			sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+			sf::Vector2f pos = (window).mapPixelToCoords(pixelPos);
+			if (pos.x > field.w / 3 && pos.x < field.w / 3 + 204 * 2 && pos.y > field.h / 5 + field.h_field_for_score && pos.y < field.h / 5 + field.h_field_for_score + 2 * 54 && event.type == event.MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+			{
+				one_player = 1;
+			}
+
+			if (pos.x > field.w / 3 && pos.x < field.w / 3 + 204 * 2 && pos.y > field.h / 2 + field.h_field_for_score && pos.y < field.h / 2 + field.h_field_for_score + 2 * 54 && event.type == event.MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+			{
+				two_player = 1;
+				play = 1;
+			}
+		}
+	}
+}
+
+void Game::draw_headband_1(sf::RenderWindow &window)
+{
+	one_player_button.sprite.setScale(2.f, 2.f);
+	two_player_button.sprite.setScale(2.f, 2.f);
+	window.draw(headband.sprite);
+	window.draw(one_player_button.sprite);
+	window.draw(two_player_button.sprite);
+}
+
+void Game::chose_count_of_snakes(sf::RenderWindow &window, sf::Event event)
+{
+	if (one_player && (!one_snake && !two_snake))
+	{
+		{
+
+			sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+			sf::Vector2f pos = (window).mapPixelToCoords(pixelPos);
+			if (pos.x > field.w / 3 && pos.x < field.w / 3 + 204 * 2 && pos.y > field.h / 5 + field.h_field_for_score && pos.y < field.h / 5 + field.h_field_for_score + 2 * 54 && event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+			{
+				one_snake = 1;
+				play = 1;
+			}
+
+			if (pos.x > field.w / 3 && pos.x < field.w / 3 + 204 * 2 && pos.y > field.h / 2 + field.h_field_for_score && pos.y < field.h / 2 + field.h_field_for_score + 2 * 54 && event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+			{
+				two_snake = 1;
+				play = 1;
+			}
+		}
+	}
+}
+
+void Game::draw_headband_1_1(sf::RenderWindow &window)
+{
+	one_snake_button.sprite.setScale(2.f, 2.f);
+	two_snake_button.sprite.setScale(2.f, 2.f);
+	window.draw(headband.sprite);
+	window.draw(one_snake_button.sprite);
+	window.draw(two_snake_button.sprite);
+}
 
 
 void Game::game_draw(sf::RenderWindow & window)
 {
 	
-
-
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -204,67 +431,58 @@ void Game::game_draw(sf::RenderWindow & window)
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+			chose_count_of_players(window, event);
+			chose_count_of_snakes(window, event);
+
 		}
 
 		window.clear();
-		if (flag >= 0)
+
+
+
+		if (!play && !one_player && !two_player && !one_snake && !two_snake)
 		{
-			draw_field(window);
-			draw_score(window);
-			if (flag > 0)
-				tick();
-			/*
-			if(count_gamers > 1)
-				shape.setFillColor(sf::Color::Red);
-			draw_snake(window, s);
-			if (count_gamers > 1)
+			draw_headband_1(window);
+
+		}
+		if (one_player)
+		{
+			if (!two_snake && !one_snake)
 			{
-				shape.setFillColor(sf::Color::Green);
-				draw_snake(window, sn.s);
+				draw_headband_1_1(window);
 			}
-			*/
-			if (count_gamers == 1)
+			if (one_snake && one_player)
 			{
+				draw_field(window);
+				draw_score(window);
+				if (play > 0)
+					one_g_one_s_tick();
 				draw_snake(window, snake_1.s);
+				draw_fruit(window);
+				snake_1.control();
+
 			}
-			else
+			if (two_snake && one_player)
 			{
-				if (who_is_win == 0)
-				{
-					shape.setFillColor(sf::Color::Red);
-					draw_snake(window, snake_1.s);
-					shape.setFillColor(sf::Color::Green);
-					draw_snake(window, snake_2.s);
-				}
-				if (who_is_win == 1)
-				{
-					shape.setFillColor(sf::Color::Red);
-					draw_snake(window, snake_1.s);
-				}
-				if (who_is_win == 2)
-				{
-					shape.setFillColor(sf::Color::Green);
-					draw_snake(window, snake_2.s);
-				}
+				std::cout << "kek" << std::endl;
+				draw_field(window);
+				draw_score(window);
+				if(play > 0)
+					one_g_two_s_tick();
+				shape.setFillColor(sf::Color::Red);
+				draw_snake(window, snake_1.s);
+				shape.setFillColor(sf::Color::Green);
+				draw_snake(window, snake_2.s);
+				draw_fruit(window);
+
+				snake_1.control();
+
+				snake_2.control();
 			}
-			draw_fruit(window);
-			snake_1.control();
-			snake_2.control();
 		}
-		else
+		if (two_player)
 		{
-			window.draw(headband.sprite);
-			//std::cout << "hui" << std::endl;
-			window.draw(start_button.sprite);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { flag += 1; std::cout << flag << std::endl; }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) { flag = 0; }
-		sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-		sf::Vector2f pos = (window).mapPixelToCoords(pixelPos);
-		//std::cout << pos.x << " " << pos.y << std::endl;
-		if (pos.x > 434 && pos.x < 807 && pos.y > (field.h + 2 * field.d) / 4 && pos.y < 418 && pos.y > 327 && sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			flag += 1;
+
 		}
 		window.display();
 	}
