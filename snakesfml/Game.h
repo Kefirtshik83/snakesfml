@@ -41,7 +41,8 @@ public:
 	bool two_snake = 0;
 	int who_is_win = 0;
 	sf::Clock cl;
-	sf::Time t = cl.getElapsedTime();
+	sf::Time t1 = cl.getElapsedTime();
+	sf::Time t2 = cl.getElapsedTime();
 	Game();
 	void one_g_one_s_tick();
 	void one_g_two_s_tick();

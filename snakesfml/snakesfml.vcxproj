@@ -123,6 +123,9 @@
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="Fruit.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game_one_g_one_s_tick.cpp" />
+    <ClCompile Include="Game_one_g_two_s_tick.cpp" />
+    <ClCompile Include="Game_two_g_two_s_tick.cpp" />
     <ClCompile Include="Picture.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="Snake_1.cpp" />
