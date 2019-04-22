@@ -57,4 +57,11 @@ public:
 	void game_draw(sf::RenderWindow &window);
 	void chose_count_of_players(sf::RenderWindow &window, sf::Event event);
 	void chose_count_of_snakes(sf::RenderWindow &window, sf::Event event);
+	void snack_1_died();
+	void snack_2_died();
+	void one_s_stand_pos();
+	void two_s_stand_pos();
+	void snake_1_set_dir();
+	void snake_2_set_dir();
+
 };

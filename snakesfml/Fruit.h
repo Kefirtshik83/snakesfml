@@ -11,7 +11,10 @@ struct fr
 
 class Fruit
 {
-public:
+private:
 	std::vector <fr> f;
+public:
 	Fruit();
+	fr get_f(int i);
+	void set_f( int i, int x, int y);
 };

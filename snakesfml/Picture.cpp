@@ -16,3 +16,13 @@ void Picture :: Create_Mask(int r, int g, int b, int a)
 	sprite.setTextureRect(sf::IntRect(x1_im, y1_im, x2_im, y2_im));
 	sprite.setPosition(x_position, y_position);
 }
+
+void Picture::Set_Scale(float x, float y)
+{
+	sprite.setScale(x, y);
+}
+
+sf::Sprite Picture::get_sprite()
+{
+	return sprite;
+}

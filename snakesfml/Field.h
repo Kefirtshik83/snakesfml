@@ -4,6 +4,14 @@ class Field
 {
 public:
 	Field(int n = 50, int m = 30, int scale = 24, int d = 20, int h_field_for_score = 60);
+	int get_scale();
+	int get_d();
+	int get_w();
+	int get_h_field_for_score();
+	int get_h();
+	int get_n();
+	int get_m();
+private:
 	int n, m;
 	int scale;
 	int d;
