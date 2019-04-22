@@ -17,4 +17,6 @@ public:
 	Fruit();
 	fr get_f(int i);
 	void set_f( int i, int x, int y);
+	void set_name_f(int i, std::string s);
+	std::string get_name_f(int i);
 };

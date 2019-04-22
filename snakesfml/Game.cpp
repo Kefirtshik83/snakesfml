@@ -21,11 +21,16 @@ shape(field.get_scale() / 2.f), shape1(12.f)
 
 	appleim.loadFromFile("pictures/apple1.png");
 	appleim.createMaskFromColor(sf::Color(255, 255, 255, 255), 0);
+	appletex.loadFromImage(appleim);
+
+	pearim.loadFromFile("pictures/pear.png");
+	pearim.createMaskFromColor(sf::Color(255, 255, 255, 255), 0);
+	peartex.loadFromImage(pearim);
 
 	start_button.Create_Mask(255, 255, 255, 255);
 	wall.setFillColor(sf::Color(200, 50, 50));
 
-	appletex.loadFromImage(appleim);
+
 
 
 	shape.setTexture(snake_1.get_texture());
@@ -157,12 +162,24 @@ void Game::draw_fruit(sf::RenderWindow &window)
 	//draw fructs
 	for (int i = 0; i < 6; ++i)
 	{
-		double k = 1.5;//retewt
-		sf::RectangleShape quad(sf::Vector2f(k * field.get_scale(), k  * field.get_scale()));
-		quad.setPosition(field.get_d() + fruit.get_f(i).x * field.get_scale() - field.get_scale() * (k - 1) / 2, field.get_d() + fruit.get_f(i).y * field.get_scale() - field.get_scale() * (k - 1) / 2 + field.get_h_field_for_score());
-		quad.setTexture(&appletex);
-		quad.setTextureRect(sf::IntRect(0, 0, 380, 380));
-		window.draw(quad);
+		if (fruit.get_name_f(i) == "apple")
+		{
+			double k = 1.5;//retewt
+			sf::RectangleShape quad(sf::Vector2f(k * field.get_scale(), k  * field.get_scale()));
+			quad.setPosition(field.get_d() + fruit.get_f(i).x * field.get_scale() - field.get_scale() * (k - 1) / 2, field.get_d() + fruit.get_f(i).y * field.get_scale() - field.get_scale() * (k - 1) / 2 + field.get_h_field_for_score());
+			quad.setTexture(&appletex);
+			quad.setTextureRect(sf::IntRect(0, 0, 380, 380));
+			window.draw(quad);
+		}
+		if (fruit.get_name_f(i) == "pear")
+		{
+			double k = 1.8;//retewt
+			sf::RectangleShape quad(sf::Vector2f(k * field.get_scale(), k  * field.get_scale()));
+			quad.setPosition(field.get_d() + fruit.get_f(i).x * field.get_scale() - field.get_scale() * (k - 1) / 2, field.get_d() + fruit.get_f(i).y * field.get_scale() - field.get_scale() * (k - 1) / 2 + field.get_h_field_for_score());
+			quad.setTexture(&peartex);
+			quad.setTextureRect(sf::IntRect(0, 0, 1200, 1200));
+			window.draw(quad);
+		}
 	}
 }
 

@@ -3,7 +3,7 @@
 class Field
 {
 public:
-	Field(int n = 50, int m = 30, int scale = 24, int d = 20, int h_field_for_score = 60);
+	Field(int n = 25, int m = 50, int scale = 24, int d = 20, int h_field_for_score = 60);
 	int get_scale();
 	int get_d();
 	int get_w();

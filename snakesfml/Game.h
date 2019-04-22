@@ -27,6 +27,8 @@ public:
 	//texture apple
 	sf::Image appleim;
 	sf::Texture appletex;
+	sf::Image pearim;
+	sf::Texture peartex;
 
 	sf::RectangleShape wall;
 	sf::CircleShape shape;

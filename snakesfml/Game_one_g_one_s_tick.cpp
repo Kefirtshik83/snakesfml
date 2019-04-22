@@ -35,7 +35,7 @@ void Game::one_g_one_s_tick()
 		{
 			snake_1.s_push_back( -150 ,-150 );
 			snake_1.set_score(snake_1.get_score() + 1);
-			snake_1.set_level(1 + snake_1.get_score() / 1);
+			snake_1.set_level(1 + snake_1.get_score() / 5);
 			fruit.set_f(i, rand() % field.get_n(), rand() % field.get_m());
 			snake_1.set_len(snake_1.get_len() + 1);
 		}
