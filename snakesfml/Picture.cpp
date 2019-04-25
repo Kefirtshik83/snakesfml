@@ -22,6 +22,11 @@ void Picture::Set_Scale(float x, float y)
 	sprite.setScale(x, y);
 }
 
+void Picture::Set_Position(int x, int y)
+{
+	sprite.setPosition((float)x, (float)y);
+}
+
 sf::Sprite Picture::get_sprite()
 {
 	return sprite;

@@ -24,12 +24,6 @@ public:
 	Snake snake_1;
 	Snake_1 snake_2;
 
-	//texture apple
-	sf::Image appleim;
-	sf::Texture appletex;
-	sf::Image pearim;
-	sf::Texture peartex;
-
 	sf::RectangleShape wall;
 	sf::CircleShape shape;
 	sf::CircleShape shape1;

@@ -10,6 +10,7 @@ public:
 	void Create_Mask(int r, int g, int b, int a);
 	Picture(std::string pic_name, int x_position = 0, int y_position = 0, int x1_im = -1, int y1_im = -1, int x2_im = -1, int y2_im = -1);
 	void Set_Scale(float x, float y);
+	void Set_Position(int x, int y);
 	sf::Sprite get_sprite();
 private:
 	float x_position, y_position;
